@@ -17,7 +17,22 @@ const addTodo = async (req, res) => {
 
 const getTodos = async (req, res) => {
   try {
-    const todos = await Todo.find({});
+    let { filter, dueDate } = req.query;
+    let query = {};
+    // filter if the duedate is equal to the date entered in the query
+    if (dueDate) {
+      dueDate = new Date(dueDate);
+      query.dueDate = { $eq: dueDate };
+    }
+    console.log(query);
+    // filter based on isCompleted status
+    if (filter === 'completed') {
+      query.isCompleted = true;
+    } else if (filter === 'pending') {
+      query.isCompleted = false;
+    }
+
+    const todos = await Todo.find(query);
     res.status(200).json({
       data: todos,
       message: 'Todo list retrieved successfully',

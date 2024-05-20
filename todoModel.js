@@ -24,7 +24,7 @@ const todoSchema = new mongoose.Schema(
   },
   // Why can't i see timestamps as part of my response on postman
   {
-    timeStamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
     toJson: { virtuals: true },
     toObject: { virtuals: true },
   }

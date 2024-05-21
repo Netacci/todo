@@ -17,14 +17,23 @@ const addTodo = async (req, res) => {
 
 const getTodos = async (req, res) => {
   try {
-    let { filter, dueDate } = req.query;
+    let { filter, startDate, endDate } = req.query;
     let query = {};
-    // filter if the duedate is equal to the date entered in the query
-    if (dueDate) {
-      dueDate = new Date(dueDate);
-      query.dueDate = { $eq: dueDate };
+    // If start date isnt passed,  it returns all todo that is less than the end date. Of endDate isnt passed, it returns all todos greater than the start date
+
+    // sets startDate greater than or equal todueDate to query.dueDate.
+    if (startDate) {
+      startDate = new Date(startDate);
+      query.dueDate = { $gte: startDate };
     }
-    console.log(query);
+    // checks if query.dueDate already has a value if not sets an empty object. then add the $lte condition to query.dueDate to ensure that dueDate is less than or equal to endDate.
+    // This solves my issue with overiding dueDate when I was passing query.dueDate = { $lte: endDate };
+    if (endDate) {
+      endDate = new Date(endDate);
+      query.dueDate = query.dueDate || {};
+      query.dueDate.$lte = endDate;
+    }
+
     // filter based on isCompleted status
     if (filter === 'completed') {
       query.isCompleted = true;
